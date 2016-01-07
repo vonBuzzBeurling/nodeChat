@@ -1,0 +1,27 @@
+{
+  "name": "nodechat",
+  "version": "1.0.0",
+  "description": "Simple chat base on socket.io and node.js",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vonBuzzBeurling/nodeChat.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Derek Tétrault",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vonBuzzBeurling/nodeChat/issues"
+  },
+  "homepage": "https://github.com/vonBuzzBeurling/nodeChat#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.4.1"
+  }
+}

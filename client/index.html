@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <!--css-->
+    <link href="js/Library/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" rel="stylesheet"/>
+    <link href="js/Library/jquery-ui-1.11.4.custom/jquery-ui.structure.css" type="text/css" rel="stylesheet"/>
+    <link href="js/Library/jquery-ui-1.11.4.custom/jquery-ui.theme.css" type="text/css" rel="stylesheet"/>
+    <link href="css/font/roboto_regular_macroman/Roboto-Regular.css" type="text/css" rel="stylesheet"/>
+    <link href="css/font/roboto_thin_macroman/Roboto-Thin.css" type="text/css" rel="stylesheet"/>
+    <link href="css/style_index.css" type="text/css" rel="stylesheet"/>
+    <!--js-->
+    <script src="js/Library/jquery-1.11.3.min.js" type="application/javascript"></script>
+    <script src="js/Library/jquery-ui-1.11.4.custom/jquery-ui.js" type="application/javascript"></script>
+    <script src="js/Library/socket.io.js" type="application/javascript"></script>
+    <script src="js/script.js" type="application/javascript"></script>
+</head>
+<body>
+<header class="unselectable">
+    <h1>DTalk</h1>
+    <span>Alpha 1.0</span>
+</header>
+<section id="contentContainer"></section>
+<aside id="onlineContainer"></aside>
+<footer>
+    <input id="inputMessage" type="text" placeholder="Message Here">
+</footer>
+<div id="loginTemplate" style="display: none">
+    <form id="login">
+        <label><span>Name </span><input placeholder="Name" type="text" form="login" name="user"></label>
+        <br/>
+        <label><span>IP </span><input id="ipInput" placeholder="127.0.0.1" type="text" form="login" name="ip"></label>
+        <br/>
+        <label><span>Port </span><input value="80" type="number" form="login" name="port"></label>
+    </form>
+</div>
+</body>
+</html>

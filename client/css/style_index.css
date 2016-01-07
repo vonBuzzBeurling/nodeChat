@@ -1,0 +1,125 @@
+.ui-dialog-titlebar-close {
+    display: none !important;
+}
+/*====================================================================================================================*/
+
+html, body {
+    padding: 0;
+    height: 100%;
+    margin: 0;
+    font-family: "robotothin", Arial, sans-serif;
+    background-color: #E2E2E2;
+}
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*/
+.unselectable {
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none;
+
+    cursor: default;
+}
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*/
+.msgContainer {
+
+}
+
+.msgTime {
+    color: #666666;
+}
+
+.msgUser {
+    color: #123456;
+    font-family: "robotoregular", Arial,sans-serif;
+}
+
+.msgContent {
+    color: #333333;
+}
+
+.error {
+    color: red;
+}
+
+.info {
+    color: green;
+}
+/*
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+header {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 2px 5px;
+    height: 10%;
+    box-sizing: border-box;
+    border-bottom: 10px solid #e2e2e2;
+    display: flex;
+    justify-content: space-between;
+}
+
+header h1 {
+    font-size: 2em;
+    margin: 0;
+    z-index: 2;
+}
+
+/*
+------------------------
+*/
+
+#contentContainer {
+    box-sizing: border-box;
+    background-color: #ffffff;
+    padding: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 80%;
+    width: 80%;
+    float: left;
+    border-right: 10px solid #e2e2e2;
+    z-index: 1;
+}
+
+#onlineContainer {
+    height: 80%;
+    width: 20%;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    float: right;
+    z-index: 1;
+    padding: 10px;
+}
+
+footer {
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-top: 10px solid #e2e2e2;
+    padding: 2px 5px;
+    height: 10%;
+    width: 100%;
+    clear: both;
+    position: absolute;
+    bottom: 0;
+    z-index: 3;
+}
+
+/*
+-----------------------------------------------------------------------------------------
+*/
+
+#login label {
+    display: flex;
+    justify-content: space-between;
+}
+
+#login input{
+
+}
