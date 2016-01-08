@@ -6,7 +6,7 @@ var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 
-app.use(express.static('client',{"index":"index.html"}));
+app.use(express.static('client', {"index": "index.html"}));
 
 app.get('/', function (request, response) {
     response.writeHead(200);
@@ -19,23 +19,23 @@ io.on("connection", function (socket) {
 
     socket.on("message", function (data) {
         var msg = JSON.parse(data);
-        console.log(logInColor("FgGreen",msg.user + ":"), logInColor("FgWhite", msg.message));
+        console.log(logTime() ,logInColor("FgGreen", msg.user + ":"), logInColor("FgWhite", msg.message));
         io.emit("message", data);
     });
 
     socket.on("client_join", function (data) {
         refreshOnlineList(data, "joining");
-        console.log(logInColor("FgYellow", data), "joined");
+        console.log(logTime() ,logInColor("FgYellow", data + " joined"));
     });
 
     socket.on("client_leave", function (data) {
         refreshOnlineList(data, "leaving");
-        console.log(logInColor("FgYellow" ,data), "left");
+        console.log(logTime() ,logInColor("FgYellow", data + " left"));
     });
 
 });
 server.listen(port, function () {
-    console.log(logInColor("FgBlue", "Server open on port " + port));
+    console.log(logTime() ,logInColor("FgCyan", "Server open on port " + port));
 });
 
 function refreshOnlineList(selectedClient, type) {
@@ -54,7 +54,7 @@ function refreshOnlineList(selectedClient, type) {
     } else if (type == "joining") {
         tabClient.push(selectedClient);
     } else {
-        console.error("Not a possible type");
+        console.error(logTime() ,"Not a possible type");
     }
 
     io.emit("refreshList", JSON.stringify(tabClient));
@@ -87,5 +87,20 @@ function logInColor(colorName, text) {
         BgCyan: "\x1b[46m",
         BgWhite: "\x1b[47m"
     };
-    return String(color[colorName] + text);
+    return String(color[colorName] + text + color.reset);
+}
+
+function logTime() {
+    var date = new Date(),
+        heure = date.getHours(),
+        minute = date.getMinutes();
+
+    if (heure < 10) {
+        heure = String("0" + heure);
+    }
+    if (minute < 10) {
+        minute = String("0" + minute);
+    }
+
+    return String("\x1b[35m" + heure + ":" + minute + "\x1b[0m");
 }
