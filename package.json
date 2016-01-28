@@ -1,6 +1,6 @@
 {
   "name": "nodechat",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Simple chat base on socket.io and node.js",
   "main": "server.js",
   "scripts": {

@@ -21,17 +21,23 @@ io.on("connect", function (socket) {
 
     socket.on("message", function (data) {
         var msg = JSON.parse(data);
-        console.log(logTime() ,logInColor("FgGreen", msg.user + ":"), logInColor("FgWhite", msg.message));
+        console.log(logTime(), logInColor("FgGreen", msg.user + ":"), logInColor("FgWhite", msg.message));
         io.emit("message", data);
     });
 
     socket.on("client_join", function (data) {
         var tempTab = [data, socket.id];
         refreshOnlineList(tempTab, "joining");
-        console.log(logTime() ,logInColor("FgYellow", data + " joined"));
+        io.emit("message", JSON.stringify({"user": "Server", "message": data + " joined", "type": "info"}));
+        console.log(logTime(), logInColor("FgYellow", data + " joined"));
     });
 
-    socket.on("disconnect", function() {
+    socket.on("client_leave", function (data) {
+        var tempTab = [data, socket.id];
+        refreshOnlineList(tempTab, "leaving");
+    });
+
+    socket.on("disconnect", function () {
         var tempTab = ["unknown", socket.id];
         refreshOnlineList(tempTab, "leaving");
     });
@@ -39,7 +45,7 @@ io.on("connect", function (socket) {
 });
 
 server.listen(port, function () {
-    console.log(logTime() ,logInColor("FgCyan", "Server open at:"));
+    console.log(logTime(), logInColor("FgCyan", "Server open at:"));
 
     Object.keys(ifaces).forEach(function (ifname) {
         var alias = 0;
@@ -52,16 +58,16 @@ server.listen(port, function () {
 
             if (alias >= 1) {
                 // this single interface has multiple ipv4 addresses
-                console.log(logInColor("FgCyan",ifname + ':' + alias +" "+ iface.address));
+                console.log(logInColor("FgCyan", ifname + ':' + alias + " " + iface.address));
             } else {
                 // this interface has only one ipv4 adress
-                console.log("     ",logInColor("FgBlue",ifname),logInColor("FgCyan",iface.address));
+                console.log("     ", logInColor("FgBlue", ifname), logInColor("FgCyan", iface.address));
             }
             ++alias;
         });
     });
 
-    console.log("     ", logInColor("FgCyan","on port: "+ port));
+    console.log("     ", logInColor("FgCyan", "on port: " + port));
 });
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -70,20 +76,25 @@ function refreshOnlineList(selectedClient, type) {
     if (type == "leaving") {
         var foundit = true,
             index = 0;
-
-        while (foundit) {
-            if (tabClient[index][1] == selectedClient[1]) {
-                console.log(logTime(), logInColor("FgYellow",tabClient[0][0] + " left"));
-                tabClient.splice(index, 1);
-                foundit = false;
-            } else {
-                index++;
+        if (tabClient.length > 0 && tabClient[0].lenght > 0) {
+            while (foundit) {
+                if (tabClient[index][1] == selectedClient[1]) {
+                    console.log(logTime(), logInColor("FgYellow", tabClient[0][0] + " left"));
+                    tabClient.splice(index, 1);
+                    foundit = false;
+                } else if (index >= tabClient.length) {
+                    foundit = true;
+                } else {
+                    index++;
+                }
             }
+        }else {
+            return;
         }
     } else if (type == "joining") {
         tabClient.push(selectedClient);
     } else {
-        console.error(logTime() ,"Not a possible type");
+        console.error(logTime(), "Not a possible type");
     }
 
     io.emit("refreshList", JSON.stringify(tabClient));

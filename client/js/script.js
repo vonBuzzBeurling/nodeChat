@@ -1,5 +1,9 @@
 $(document).ready(main);
 
+window.onbeforeunload = function(){
+    socket.emit("client_leave", localUser);
+};
+
 var localUser;
 var socket;
 
@@ -44,16 +48,16 @@ function connect() {
         timeout: 20000
     });
 
-    socket.on("connect", function (e) {
+    socket.on("connect", function () {
         postMsg("Client", "Connected to server", "info");
         socket.emit("client_join", localUser);
     });
 
-    socket.on("error", function (e) {
+    socket.on("error", function () {
         postMsg("Client", "Error connecting to server", "error");
     });
 
-    socket.on("disconnect", function (e) {
+    socket.on("disconnect", function () {
         postMsg("Client", "Disconnected from the server", "error");
     });
 
@@ -61,7 +65,7 @@ function connect() {
         postMsg("Client", "Trying to reconnect to the server - " + number, "info");
     });
 
-    socket.on("reconnect_failed", function (e) {
+    socket.on("reconnect_failed", function () {
         postMsg("Client", "Reconnection failed", "error");
     });
 
@@ -80,7 +84,7 @@ function connect() {
             var tempDiv = $("<div></div>"),
                 tempSpan = $("<span></span>");
 
-            tempSpan.text(msg[i]);
+            tempSpan.text(msg[i][0]);
             tempDiv.append(tempSpan);
             $("#onlineContainer").append(tempDiv);
 
@@ -88,11 +92,7 @@ function connect() {
     });
 }
 
-
-/*
- * ----------------------------------------------------------------------------------------------------------------------
- * */
-
+// ----------------------------------------------------------------------------------------------------------------------
 function prepareSend() {
     var msgToSend = $("#inputMessage").val();
     if (msgToSend != "" && msgToSend != ".") {
@@ -157,6 +157,7 @@ function postMsg(username, message, type) {
     }
 
     tempContainer.append(tempTime).append(tempUser).append(tempContent);
-    $("#contentContainer").prepend(tempContainer);
+    $("#contentContainer").append(tempContainer);
+	$("#contentContainer").scrollTop(1E10);
 
 }
