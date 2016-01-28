@@ -4,6 +4,8 @@ var tabClient = [];
 var fs = require("fs");
 var express = require("express");
 var app = express();
+var os = require("os");
+var ifaces = os.networkInterfaces();
 var server = require("http").createServer(app);
 
 app.use(express.static('client', {"index": "index.html"}));
@@ -15,7 +17,7 @@ app.get('/', function (request, response) {
 
 
 var io = require("socket.io")(server);
-io.on("connection", function (socket) {
+io.on("connect", function (socket) {
 
     socket.on("message", function (data) {
         var msg = JSON.parse(data);
@@ -24,19 +26,45 @@ io.on("connection", function (socket) {
     });
 
     socket.on("client_join", function (data) {
-        refreshOnlineList(data, "joining");
+        var tempTab = [data, socket.id];
+        refreshOnlineList(tempTab, "joining");
         console.log(logTime() ,logInColor("FgYellow", data + " joined"));
     });
 
-    socket.on("client_leave", function (data) {
-        refreshOnlineList(data, "leaving");
-        console.log(logTime() ,logInColor("FgYellow", data + " left"));
+    socket.on("disconnect", function() {
+        var tempTab = ["unknown", socket.id];
+        refreshOnlineList(tempTab, "leaving");
     });
 
 });
+
 server.listen(port, function () {
-    console.log(logTime() ,logInColor("FgCyan", "Server open on port " + port));
+    console.log(logTime() ,logInColor("FgCyan", "Server open at:"));
+
+    Object.keys(ifaces).forEach(function (ifname) {
+        var alias = 0;
+
+        ifaces[ifname].forEach(function (iface) {
+            if ('IPv4' !== iface.family || iface.internal !== false) {
+                // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+                return;
+            }
+
+            if (alias >= 1) {
+                // this single interface has multiple ipv4 addresses
+                console.log(logInColor("FgCyan",ifname + ':' + alias +" "+ iface.address));
+            } else {
+                // this interface has only one ipv4 adress
+                console.log("     ",logInColor("FgBlue",ifname),logInColor("FgCyan",iface.address));
+            }
+            ++alias;
+        });
+    });
+
+    console.log("     ", logInColor("FgCyan","on port: "+ port));
 });
+
+//----------------------------------------------------------------------------------------------------------------------
 
 function refreshOnlineList(selectedClient, type) {
     if (type == "leaving") {
@@ -44,7 +72,8 @@ function refreshOnlineList(selectedClient, type) {
             index = 0;
 
         while (foundit) {
-            if (tabClient[index] == selectedClient) {
+            if (tabClient[index][1] == selectedClient[1]) {
+                console.log(logTime(), logInColor("FgYellow",tabClient[0][0] + " left"));
                 tabClient.splice(index, 1);
                 foundit = false;
             } else {

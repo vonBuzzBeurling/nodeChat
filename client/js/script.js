@@ -1,9 +1,5 @@
 $(document).ready(main);
 
-window.onbeforeunload = function(){
-    socket.emit("client_leave", localUser);
-};
-
 var localUser;
 var socket;
 
