@@ -1,8 +1,8 @@
-$(document).ready(main);
-
 window.onbeforeunload = function(){
     socket.emit("client_leave", localUser);
 };
+
+$(document).ready(main);
 
 var localUser;
 var socket;
@@ -76,6 +76,8 @@ function connect() {
 
     socket.on("refreshList",function(data){
         $("#onlineContainer").empty();
+
+        console.log(data);
 
         var msg = JSON.parse(data);
 

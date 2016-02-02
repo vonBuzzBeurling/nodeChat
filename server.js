@@ -52,15 +52,11 @@ server.listen(port, function () {
 
         ifaces[ifname].forEach(function (iface) {
             if ('IPv4' !== iface.family || iface.internal !== false) {
-                // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
                 return;
             }
-
             if (alias >= 1) {
-                // this single interface has multiple ipv4 addresses
                 console.log(logInColor("FgCyan", ifname + ':' + alias + " " + iface.address));
             } else {
-                // this interface has only one ipv4 adress
                 console.log("     ", logInColor("FgBlue", ifname), logInColor("FgCyan", iface.address));
             }
             ++alias;
@@ -76,15 +72,15 @@ function refreshOnlineList(selectedClient, type) {
     if (type == "leaving") {
         var foundit = true,
             index = 0;
-        if (tabClient.length > 0 && tabClient[0].lenght > 0) {
+        if (tabClient.length > 0 && tabClient[index] != undefined) {
             while (foundit) {
-                if (tabClient[index][1] == selectedClient[1]) {
-                    console.log(logTime(), logInColor("FgYellow", tabClient[0][0] + " left"));
-                    tabClient.splice(index, 1);
+                if (index >= tabClient.length) {
+                    return;
+                }else if(tabClient[index][1] == selectedClient[1]){
                     foundit = false;
-                } else if (index >= tabClient.length) {
-                    foundit = true;
-                } else {
+                    console.log(logTime(), logInColor("FgYellow", tabClient[index][0] + " left"));
+                    tabClient.splice(index, 1);
+                }else {
                     index++;
                 }
             }
