@@ -17,23 +17,28 @@
     <script src="js/script.js" type="application/javascript"></script>
 </head>
 <body>
-<header class="unselectable">
-    <h1>DTalk</h1>
-    <span>Alpha 1.2</span>
-</header>
-<section id="contentContainer"></section>
-<aside id="onlineContainer"></aside>
-<footer>
-    <input id="inputMessage" type="text" placeholder="Message Here">
-</footer>
-<div id="loginTemplate" style="display: none">
-    <form id="login">
-        <label><span>Name </span><input placeholder="Name" type="text" form="login" name="user"></label>
-        <br/>
-        <label><span>IP </span><input id="ipInput" placeholder="127.0.0.1" type="text" form="login" name="ip"></label>
-        <br/>
-        <label><span>Port </span><input value="80" type="number" form="login" name="port"></label>
-    </form>
-</div>
+    <header class="unselectable">
+        <h1>DTalk</h1>
+        <span>Alpha 1.2</span>
+    </header>
+    <section id="contentContainer"></section>
+    <aside id="onlineContainer"></aside>
+    <footer>
+        <input id="inputMessage" type="text" placeholder="Message Here">
+    </footer>
+    <div id="loginTemplate" style="display: none">
+        <form id="login">
+            <label><span>Name </span><input placeholder="Name" type="text" form="login" name="user"></label>
+            <br/>
+            <label><span>IP </span><input id="ipInput" placeholder="127.0.0.1" type="text" form="login"
+                                          name="ip"></label>
+            <br/>
+            <label><span>Port </span><input value="80" type="number" form="login" name="port"></label>
+        </form>
+    </div>
+    <audio id="ping" style="display: none" preload="auto">
+        <source src="media/ping.ogg">
+        <source src="media/ping.mp3">
+    </audio>
 </body>
 </html>

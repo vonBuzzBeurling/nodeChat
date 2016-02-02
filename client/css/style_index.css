@@ -45,10 +45,20 @@ html, body {
 
 .error {
     color: red;
+    font-weight: bold;
+    font-style: italic;
 }
 
 .info {
     color: green;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.clientEvent{
+    color: darkorange;
+    font-weight: bold;
+    font-style: italic;
 }
 /*
 ------------------------------------------------------------------------------------------------------------------------

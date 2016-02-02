@@ -28,12 +28,13 @@ io.on("connect", function (socket) {
     socket.on("client_join", function (data) {
         var tempTab = [data, socket.id];
         refreshOnlineList(tempTab, "joining");
-        io.emit("message", JSON.stringify({"user": "Server", "message": data + " joined", "type": "info"}));
+        io.emit("message", JSON.stringify({"user": "Server", "message": data + " joined", "type": "clientEvent"}));
         console.log(logTime(), logInColor("FgYellow", data + " joined"));
     });
 
     socket.on("client_leave", function (data) {
         var tempTab = [data, socket.id];
+        io.emit("message", JSON.stringify({"user": "Server", "message": data + " left", "type": "clientEvent"}));
         refreshOnlineList(tempTab, "leaving");
     });
 

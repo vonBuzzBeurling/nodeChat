@@ -79,6 +79,10 @@ function connect() {
     socket.on("message",function(data){
         var msg = JSON.parse(data);
         postMsg(msg.user, msg.message, msg.type);
+        document.getElementById("ping").play();
+        setTimeout(function(){
+            document.getElementById("ping").pause();
+        }, 500)
     });
 
     socket.on("refreshList",function(data){
@@ -162,6 +166,12 @@ function postMsg(username, message, type) {
             tempTime.addClass("error");
             tempUser.addClass("error");
             tempContent.addClass("error");
+            break;
+        case "clientEvent":
+            tempContainer.addClass("msgContainer");
+            tempTime.addClass("msgTime");
+            tempUser.addClass("clientEvent");
+            tempContent.addClass("clientEvent");
             break;
     }
 
