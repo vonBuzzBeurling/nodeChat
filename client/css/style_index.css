@@ -109,6 +109,21 @@ footer {
     position: absolute;
     bottom: 0;
     z-index: 3;
+    text-align: center;
+}
+
+#inputMessage {
+    padding: 10px;
+    border: none;
+    border-bottom: solid 2px #c9c9c9;
+    transition: border 0.3s;
+    width: 80%;
+
+}
+
+#inputMessage:focus{
+    border-bottom: solid 2px #969696;
+    outline: none;
 }
 
 /*

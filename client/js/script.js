@@ -32,6 +32,13 @@ function main() {
             prepareSend();
         }
     });
+
+    $("#login").on("keypress", function(e){
+        if(e.which == 13){
+            $("#loginTemplate").dialog("close");
+            connect();
+        }
+    });
 }
 
 function connect() {
