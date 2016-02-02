@@ -4,6 +4,8 @@ var tabClient = [];
 var fs = require("fs");
 var express = require("express");
 var app = express();
+var os = require("os");
+var ifaces = os.networkInterfaces();
 var server = require("http").createServer(app);
 
 app.use(express.static('client', {"index": "index.html"}));
@@ -15,46 +17,81 @@ app.get('/', function (request, response) {
 
 
 var io = require("socket.io")(server);
-io.on("connection", function (socket) {
+io.on("connect", function (socket) {
 
     socket.on("message", function (data) {
         var msg = JSON.parse(data);
-        console.log(logTime() ,logInColor("FgGreen", msg.user + ":"), logInColor("FgWhite", msg.message));
+        console.log(logTime(), logInColor("FgGreen", msg.user + ":"), logInColor("FgWhite", msg.message));
         io.emit("message", data);
     });
 
     socket.on("client_join", function (data) {
-        refreshOnlineList(data, "joining");
-        console.log(logTime() ,logInColor("FgYellow", data + " joined"));
+        var tempTab = [data, socket.id];
+        refreshOnlineList(tempTab, "joining");
+        io.emit("message", JSON.stringify({"user": "Server", "message": data + " joined", "type": "clientEvent"}));
+        console.log(logTime(), logInColor("FgYellow", data + " joined"));
     });
 
     socket.on("client_leave", function (data) {
-        refreshOnlineList(data, "leaving");
-        console.log(logTime() ,logInColor("FgYellow", data + " left"));
+        var tempTab = [data, socket.id];
+        io.emit("message", JSON.stringify({"user": "Server", "message": data + " left", "type": "clientEvent"}));
+        refreshOnlineList(tempTab, "leaving");
+    });
+
+    socket.on("disconnect", function () {
+        var tempTab = ["unknown", socket.id];
+        refreshOnlineList(tempTab, "leaving");
     });
 
 });
+
 server.listen(port, function () {
-    console.log(logTime() ,logInColor("FgCyan", "Server open on port " + port));
+    console.log(logTime(), logInColor("FgCyan", "Server open at:"));
+
+    Object.keys(ifaces).forEach(function (ifname) {
+        var alias = 0;
+
+        ifaces[ifname].forEach(function (iface) {
+            if ('IPv4' !== iface.family || iface.internal !== false) {
+                return;
+            }
+            if (alias >= 1) {
+                console.log(logInColor("FgCyan", ifname + ':' + alias + " " + iface.address));
+            } else {
+                console.log("     ", logInColor("FgBlue", ifname), logInColor("FgCyan", iface.address));
+            }
+            ++alias;
+        });
+    });
+
+    console.log("     ", logInColor("FgCyan", "on port: " + port));
 });
+
+//----------------------------------------------------------------------------------------------------------------------
 
 function refreshOnlineList(selectedClient, type) {
     if (type == "leaving") {
         var foundit = true,
             index = 0;
-
-        while (foundit) {
-            if (tabClient[index] == selectedClient) {
-                tabClient.splice(index, 1);
-                foundit = false;
-            } else {
-                index++;
+        if (tabClient.length > 0 && tabClient[index] != undefined) {
+            while (foundit) {
+                if (index >= tabClient.length) {
+                    return;
+                }else if(tabClient[index][1] == selectedClient[1]){
+                    foundit = false;
+                    console.log(logTime(), logInColor("FgYellow", tabClient[index][0] + " left"));
+                    tabClient.splice(index, 1);
+                }else {
+                    index++;
+                }
             }
+        }else {
+            return;
         }
     } else if (type == "joining") {
         tabClient.push(selectedClient);
     } else {
-        console.error(logTime() ,"Not a possible type");
+        console.error(logTime(), "Not a possible type");
     }
 
     io.emit("refreshList", JSON.stringify(tabClient));

@@ -1,8 +1,8 @@
-$(document).ready(main);
-
 window.onbeforeunload = function(){
     socket.emit("client_leave", localUser);
 };
+
+$(document).ready(main);
 
 var localUser;
 var socket;
@@ -32,6 +32,13 @@ function main() {
             prepareSend();
         }
     });
+
+    $("#login").on("keypress", function(e){
+        if(e.which == 13){
+            $("#loginTemplate").dialog("close");
+            connect();
+        }
+    });
 }
 
 function connect() {
@@ -48,16 +55,16 @@ function connect() {
         timeout: 20000
     });
 
-    socket.on("connect", function (e) {
+    socket.on("connect", function () {
         postMsg("Client", "Connected to server", "info");
         socket.emit("client_join", localUser);
     });
 
-    socket.on("error", function (e) {
+    socket.on("error", function () {
         postMsg("Client", "Error connecting to server", "error");
     });
 
-    socket.on("disconnect", function (e) {
+    socket.on("disconnect", function () {
         postMsg("Client", "Disconnected from the server", "error");
     });
 
@@ -65,17 +72,23 @@ function connect() {
         postMsg("Client", "Trying to reconnect to the server - " + number, "info");
     });
 
-    socket.on("reconnect_failed", function (e) {
+    socket.on("reconnect_failed", function () {
         postMsg("Client", "Reconnection failed", "error");
     });
 
     socket.on("message",function(data){
         var msg = JSON.parse(data);
         postMsg(msg.user, msg.message, msg.type);
+        document.getElementById("ping").play();
+        setTimeout(function(){
+            document.getElementById("ping").pause();
+        }, 500)
     });
 
     socket.on("refreshList",function(data){
         $("#onlineContainer").empty();
+
+        console.log(data);
 
         var msg = JSON.parse(data);
 
@@ -84,7 +97,7 @@ function connect() {
             var tempDiv = $("<div></div>"),
                 tempSpan = $("<span></span>");
 
-            tempSpan.text(msg[i]);
+            tempSpan.text(msg[i][0]);
             tempDiv.append(tempSpan);
             $("#onlineContainer").append(tempDiv);
 
@@ -92,11 +105,7 @@ function connect() {
     });
 }
 
-
-/*
- * ----------------------------------------------------------------------------------------------------------------------
- * */
-
+// ----------------------------------------------------------------------------------------------------------------------
 function prepareSend() {
     var msgToSend = $("#inputMessage").val();
     if (msgToSend != "" && msgToSend != ".") {
@@ -158,9 +167,16 @@ function postMsg(username, message, type) {
             tempUser.addClass("error");
             tempContent.addClass("error");
             break;
+        case "clientEvent":
+            tempContainer.addClass("msgContainer");
+            tempTime.addClass("msgTime");
+            tempUser.addClass("clientEvent");
+            tempContent.addClass("clientEvent");
+            break;
     }
 
     tempContainer.append(tempTime).append(tempUser).append(tempContent);
-    $("#contentContainer").prepend(tempContainer);
+    $("#contentContainer").append(tempContainer);
+	$("#contentContainer").scrollTop(1E10);
 
 }
